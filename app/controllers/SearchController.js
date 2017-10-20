@@ -15,7 +15,7 @@ export const findUserSearches = (req, res) => {
     return Search
         .findAndCountAll({
             where: {
-                user_id: req.auth.credentials.id
+                user_id: (req.params.userId) ? req.params.userId : req.auth.credentials.id
             },
             offset: offset,
             limit: size,

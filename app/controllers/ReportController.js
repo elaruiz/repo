@@ -15,10 +15,21 @@ const Op = Sequelize.Op;
 
 export const findUserReports = (req, res) => {
     let size = parseInt(req.query.size) || 15,
-        page = parseInt(req.query.page) || 1,
+        page= parseInt(req.query.page) || 1,
         offset = size * (page - 1);
     return Report
-        .findAndCountAll({ where: { user_id: req.auth.credentials.id }, offset: offset, limit: size })
+        .findAndCountAll({
+            offset: offset,
+            limit: size,
+            order: [['created_at', 'DESC']],
+            where: (req.query.start && req.query.end) ?
+                {
+                    created_at: {
+                        [Op.between]: [`${req.query.start} 00:00:00`, `${req.query.end} 23:59:59`]
+                    },
+                    user_id: req.auth.credentials.id
+                } : {user_id: req.auth.credentials.id}
+        })
         .then(reports => {
             let pages = Math.ceil(reports.count / size);
             res({
@@ -27,14 +38,12 @@ export const findUserReports = (req, res) => {
                     total: reports.count,
                     pages: pages,
                     items: size,
-                    page: offset + 1
+                    page: offset+1
                 }
-            })
-                .code(200)
+            }).code(200)
         })
         .catch((error) => res(Boom.badRequest(error)));
 };
-
 
 export const findUserReport = (req, res) => {
     return Report

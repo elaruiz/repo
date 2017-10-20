@@ -18,7 +18,7 @@ export const paypalCharge = (data) => {
             "transactions": [{
                 "item_list": {
                     "items": [{
-                        "name": "Plan " + data.name,
+                        "name": data.name,
                         "price": data.price,
                         "currency": data.currency,
                         "quantity": 1

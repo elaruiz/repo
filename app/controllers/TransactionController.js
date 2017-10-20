@@ -132,13 +132,16 @@ const searchBalances = (req, res) => {
 
 export const findUserBalance = (req, res) => {
     let q = _.omit(req.query, ['start', 'end', 'size', 'page']);
+    let size = parseInt(req.query.size) || 15,
+        page= parseInt(req.query.page) || 1,
+        offset = size * (page - 1);
     return Transaction
         .findAndCountAll({
             offset: offset,
             limit: size,
             order: [['created_at', 'DESC']],
             where: (req.query.start && req.query.end)?
-                {...q, created_at: {[Op.between]: [req.query.start, req.query.end]}} : q,
+                {...q, created_at: { [Op.between]: [`${req.query.start} 00:00:00`, `${req.query.end} 23:59:59`]}} : q,
             include: [{
                 model : Membership,
                 where: {user_id: req.auth.credentials.id },
@@ -171,7 +174,12 @@ export const findAllBalances = (req, res) => {
             offset: offset,
             limit: size,
             order: [['created_at', 'DESC']],
-            where: (req.query.start && req.query.end)? Object.assign({created_at: {[Op.between]: [req.query.start, req.query.end]}}, q) : q,
+            where: (req.query.start && req.query.end) ?
+                Object.assign(
+                    { created_at: {
+                            [Op.between]: [`${req.query.start} 00:00:00`, `${req.query.end} 23:59:59`]
+                        }
+                    }, q) : q,
             include: [{
                 model : Membership,
                 paranoid: false,

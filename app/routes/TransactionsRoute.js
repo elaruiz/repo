@@ -2,7 +2,6 @@ import {
     findAllBalances,
     findUserBalance,
     getPaymentDetails,
-    getPaypalPaymentDetails,
     paymentExecuteMembershipPaypal,
     paymentExecutePaypal,
     paymentMembershipPaypal,
