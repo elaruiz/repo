@@ -17,6 +17,7 @@
     "hapi": "^16.6.2",
     "hapi-auth-jwt": "^4.0.0",
     "hapi-cors": "^1.0.1",
+    "highcharts-export-server": "^2.0.2",
     "hoek": "^4.2.0",
     "inert": "^4.2.1",
     "joi": "^10.6.0",

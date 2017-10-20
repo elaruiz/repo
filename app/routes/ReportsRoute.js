@@ -6,6 +6,7 @@ import {
     remainingReports,
     generateUserReport
 } from "../controllers/ReportController";
+import { generateGraphic } from "../controllers/GraphicController";
 
 
 const createReportRoute = {
@@ -50,12 +51,11 @@ const generateReportRoute = {
         },
         pre: [{ method: checkUserReports, assign: 'reports' }],
         handler: remainingReports
-
     }
 };
 
 const getReportRoute = {
-    method: 'GET',
+    method: 'POST',
     path: '/api/reports/property/{reference}',
     config: {
         auth: {
@@ -66,10 +66,20 @@ const getReportRoute = {
     }
 };
 
+const generateGraphicRoute = {
+    method: 'POST',
+    path: '/api/reports/graphic',
+    config: {
+        auth: false,
+        handler: generateGraphic
+    }
+};
+
 export default [
     createReportRoute,
     readUserReportsRoute,
     readUserReportRoute,
     generateReportRoute,
-    getReportRoute
+    getReportRoute,
+    generateGraphicRoute
 ];

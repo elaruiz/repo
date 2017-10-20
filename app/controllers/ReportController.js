@@ -46,12 +46,14 @@ export const findUserReport = (req, res) => {
 export const createReport = (req, file) => {
     return Report
         .create({
-            user_id : req.auth.credentials.id,
-            reference : req.params.reference,
-            link : file
+            user_id: req.auth.credentials.id,
+            reference: req.params.reference,
+            link: file
         })
         .then(report => report)
-        .catch(error => { throw new Error(error)});
+        .catch(error => {
+            throw new Error(error)
+        });
 };
 
 export const checkUserReports = async (req, res) => {
@@ -63,7 +65,7 @@ export const checkUserReports = async (req, res) => {
                 }
             });
         (response <= 0 || isNaN(response)) ? res(Boom.forbidden(`Can't generate report`)) : res(response)
-    }catch (err) {
+    } catch (err) {
         res(Boom.badRequest(err))
     }
 };
@@ -91,16 +93,21 @@ export const generateUserReport = (req, res) => {
     const reference = req.params.reference;
     const filename = `./public/report_${date}_${reference}_user_${req.auth.credentials.id}.pdf`;
 
-    request(`${API_PROCESSOR}/property/process/${reference}/pdf`)
+    request.post(
+        {
+            url: `${API_PROCESSOR}/property/process/${reference}/pdf`,
+            json: true,
+            body: {
+                graphicBase64: req.payload.graphic
+            }
+        })
         .on('error', (err) => {
             res(Boom.badImplementation(err));
         })
         .pipe(fs.createWriteStream(filename))
         .on('finish', () => {
             Promise.all([createReport(req, filename), remainingReports(req)])
-                .then(values =>
-                    res.file(filename))
+                .then(values => res.file(filename))
                 .catch(error => res(Boom.badRequest(error)))
-        }
-        )
+        })
 };
