@@ -157,7 +157,7 @@ export const findUserBalance = (req, res) => {
                     total: transactions.count,
                     pages: pages,
                     items: size,
-                    page: offset+1
+                    page: page
                 }
             }).code(200)
         })
@@ -207,7 +207,7 @@ export const findAllBalances = (req, res) => {
                     total: transactions.count,
                     pages: pages,
                     items: size,
-                    page: offset+1
+                    page: page
                 }
             }).code(200)
         })

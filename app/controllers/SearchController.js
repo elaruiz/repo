@@ -5,7 +5,6 @@ import Models from '../models';
 import { API_PROCESSOR, API_CATASTRO } from "../constants"
 import request from 'request-promise';
 const Search = Models.search;
-const User = Models.user;
 const Sequelize = Models.Sequelize;
 
 export const findUserSearches = (req, res) => {
@@ -28,7 +27,7 @@ export const findUserSearches = (req, res) => {
                     total: searches.count,
                     pages: pages,
                     items: size,
-                    page: offset+1      
+                    page: page
                 }
             })
             .code(200)
@@ -42,8 +41,7 @@ export const findMostWanted = async (req, res) => {
             group: ['reference', 'url', 'address'],
             attributes: ['reference', Sequelize.fn('count', Sequelize.col('reference')), 'url', 'address'],
             order: [['count', 'DESC']],
-            offset: req.query.page, 
-            limit: req.query.size || 10
+            limit: parseInt(req.query.size)  || 10
         })
         .then(search => { res({data: search}).code(200) })
         .catch((error) => res(Boom.badRequest(error)));

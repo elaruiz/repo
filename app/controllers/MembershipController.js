@@ -16,16 +16,39 @@ export const createMembership = async (req) => {
 };
 
 export const findUserMemberships = (req, res) => {
+    let size = parseInt(req.query.size) || 15,
+        page= parseInt(req.query.page) || 1,
+        offset = size * (page - 1);
     return Membership
-        .findAll({
-            where: {user_id: req.auth.credentials.id},
+        .findAndCountAll({
+            offset: offset,
+            limit: size,
+            order: [['created_at', 'DESC']],
+            where: (req.query.start && req.query.end) ?
+                {
+                    created_at: {
+                        [Op.between]: [`${req.query.start} 00:00:00`, `${req.query.end} 23:59:59`]
+                    },
+                    user_id: req.auth.credentials.id
+                } : {user_id: req.auth.credentials.id},
             attributes: {
                 exclude: ['user_id', 'plan_id']},
             include: [{ model : Plan, attributes: {
                 exclude: ['created_at', 'updated_at', 'deleted_at']} } ]
         })
-        .then(memberships => res({data: memberships}).code(200))
-        .catch(error => res(Boom.badRequest(error)));
+        .then(memberships => {
+            let pages = Math.ceil(memberships.count / size);
+            res({
+                data: memberships.rows,
+                meta: {
+                    total: memberships.count,
+                    pages: pages,
+                    items: size,
+                    page: page
+                }
+            }).code(200)
+        })
+        .catch((error) => res(Boom.badRequest(error)));
 };
 
 export const findUserMembership = (req, res) => {

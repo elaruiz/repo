@@ -32,7 +32,7 @@ export const findAllPlans = (req, res) => {
                     total: plans.count, 
                     pages: pages,
                     items: size,
-                    page: offset+1      
+                    page: page
                 }
             })
             .code(200)

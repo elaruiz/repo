@@ -49,10 +49,8 @@ export const sendMail= (token, user) => {
             name: user.name
         }
     };
-
     smtpTransport.sendMail(data);
 };
-
 
 export const sendMailReminder = (users) => {
     for (let i = 0, len = users.length; i < len; i++) {

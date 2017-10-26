@@ -93,7 +93,7 @@ export const findUser = (req, res) => {
                 id: req.auth.credentials.id
             },
             attributes: {
-                exclude: ['password', 'created_at', 'updated_at', 'deleted_at', 'admin']
+                exclude: ['password', 'updated_at', 'deleted_at', 'admin']
             }
         })
         .then(user => {
@@ -144,7 +144,7 @@ export const findAllUsers = (req, res) => {
                     total: users.count, 
                     pages: pages,
                     items: size,
-                    page: offset+1      
+                    page: page
                 }}).code(200)})
         .catch((error) => res(Boom.badRequest(error)));
 };

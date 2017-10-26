@@ -25,7 +25,7 @@ const Message = Models.message;
                         total: messages.count, 
                         pages: pages,
                         items: size,
-                        page: offset+1      
+                        page: page
                     }
                 })
                 .code(200)
