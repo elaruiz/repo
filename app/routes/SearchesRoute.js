@@ -55,7 +55,7 @@ const readAllSearchesRoute = {
 
 const searchPropertyRoute = {
     method: 'GET',
-    path: '/api/search/property/{referencia}',
+    path: '/api/search/property/{provincia}/{municipio}/{referencia}',
     config: {
         auth: {
             strategy: 'jwt',

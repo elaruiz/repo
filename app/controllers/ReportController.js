@@ -104,11 +104,13 @@ export const remainingReports = async (req) => {
 export const generateUserReport = (req, res) => {
     const now = moment(), date = now.clone();
     const reference = req.params.reference;
+    const province = req.params.province;
+    const municipality = req.params.municipality;
     const filename = `./public/report_${date}_${reference}_user_${req.auth.credentials.id}.pdf`;
 
     request.post(
         {
-            url: `${API_PROCESSOR}/property/process/${reference}/pdf`,
+            url: `${API_PROCESSOR}/property/process/${province}/${municipality}/${reference}/pdf`,
             json: true,
             body: {
                 graphicBase64: req.payload.graphic

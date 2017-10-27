@@ -86,8 +86,9 @@ export const deleteSearches = (req, res) => {
 };
 
 export const searchProperty = (req, res) => {
+    const { params } = req;
     request({
-        uri: `${API_PROCESSOR}/property/process/${req.params.referencia}`,
+        uri: `${API_PROCESSOR}/property/process/${params.provincia}/${params.municipio}/${params.referencia}`,
         json: true
     })
     .then(response => {
@@ -99,13 +100,13 @@ export const searchProperty = (req, res) => {
         res(response).code(200);
         })
         .catch(e => res(Boom.badRequest(e)))
-}
+};
 
 export const searchByAddress = (req, res) => {
     const { query } = req;
     const { province, municipality, street, type, number } = query;
 
-    const url = `${API_CATASTRO}/property/address?province=${province}&municipality=${municipality}&type=${type}&street=${street}&number=${number}`
+    const url = `${API_CATASTRO}/property/address?province=${province}&municipality=${municipality}&type=${type}&street=${street}&number=${number}`;
     request({
         uri: url,
         json: true
@@ -114,7 +115,7 @@ export const searchByAddress = (req, res) => {
         res(response).code(200);
     })
     .catch(e => res(Boom.badRequest(e)))
-}
+};
 
 export const searchMunicipalities = (req, res) => {
     let url = `${API_CATASTRO}/municipalities/${req.params.name}`
@@ -126,7 +127,7 @@ export const searchMunicipalities = (req, res) => {
         res(response).code(200);
     })
     .catch(e => res(Boom.badRequest(e)))
-}
+};
 
 export const searchProvinces = (req, res) => {
     let url = `${API_CATASTRO}/provinces`
@@ -138,10 +139,10 @@ export const searchProvinces = (req, res) => {
         res(response).code(200);
     })
     .catch(e => res(Boom.badRequest(e)))
-}
+};
 
 export const searchVias = (req, res) => {
-    let url = `${API_CATASTRO}/vias/${req.params.province}/${req.params.municipality}`
+    let url = `${API_CATASTRO}/vias/${req.params.province}/${req.params.municipality}`;
     request({
         uri: url,
         json: true
@@ -150,4 +151,4 @@ export const searchVias = (req, res) => {
         res(response).code(200);
     })
     .catch(e => res(Boom.badRequest(e)))
-}
+};

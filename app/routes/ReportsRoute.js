@@ -56,7 +56,7 @@ const generateReportRoute = {
 
 const getReportRoute = {
     method: 'POST',
-    path: '/api/reports/property/{reference}',
+    path: '/api/reports/property/{province}/{municipality}/{reference}',
     config: {
         auth: {
             strategy: 'jwt',
