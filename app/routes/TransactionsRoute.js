@@ -5,7 +5,7 @@ import {
     paymentExecuteMembershipPaypal,
     paymentExecutePaypal,
     paymentMembershipPaypal,
-    paymentMembershipStripe
+    paymentMembershipStripe, verifyPaypalPayment
 } from "../controllers/TransactionController";
 import { findUserMembership } from "../controllers/MembershipController";
 import { findPlan } from "../controllers/PlanController";
@@ -116,6 +116,17 @@ const paymentDetailsRoute = {
     }
 };
 
+const verifyPaypalPaymentRoute = {
+    method: 'GET',
+    path: '/api/paypal/verify/{id}',
+    config: {
+        auth: {
+            strategy: 'jwt'
+        },
+        handler: verifyPaypalPayment
+    }
+};
+
 export default [
     payMembershipPaypalRoute,
     payExecuteMembershipPaypalRoute,
@@ -125,5 +136,6 @@ export default [
     paypalRoute,
     invoiceByUserRoute,
     invoiceByPlanRoute,
-    paymentDetailsRoute
+    paymentDetailsRoute,
+    verifyPaypalPaymentRoute
 ];

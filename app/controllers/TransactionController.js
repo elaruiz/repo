@@ -230,3 +230,10 @@ export const getPaymentDetails = (req, res) => {
         .then(data => res(data).code(200))
         .catch(err => Boom.badRequest(err));
 };
+
+export const verifyPaypalPayment = (req,res) => {
+    const paymentId = req.params.id;
+    paypalPaymentDetails(paymentId)
+        .then(data => res(data).code(200))
+        .catch(err => Boom.badRequest(err))
+};
