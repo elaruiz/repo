@@ -73,7 +73,12 @@ export const paymentPaypal = async (req, res) => {
 
 export const paymentExecutePaypal = async (req, res) => {
     try {
-        let payment = await paypalExecutePayment(req);
+        let payment = null;
+        if(!req.payload.payment) {
+            payment = await paypalExecutePayment(req);
+        }else{
+            payment = req.payload.payment;
+        }
         if (payment.transactions[0].related_resources[0].sale.state === "completed") {
             let membership = await createMembership(req);
             let transaction = await createTransactionPaypal(payment, membership);
