@@ -32,7 +32,15 @@ export const createUserSchema = Joi.object({
           }
         }
       }),
-      password2: Joi.string().valid(Joi.ref('password')).required().options({ language: { any: { allowOnly: 'contraseñas debe coincidir' } } })
+      password2: Joi.string().valid(Joi.ref('password')).required().options({
+          language: {
+              any: {
+                  allowOnly: 'Contraseñas deben coincidir',
+                  required: 'Este campo es requerido',
+                  empty: 'Este campo no puede ser vacío'
+              }
+          }
+      })
 });
 
 export const checkUserSchema = Joi.object({
@@ -62,11 +70,22 @@ export const authenticateUserSchema = Joi.object({
     });
 
 export const payloadSchema = Joi.object({
-    name: Joi.string().trim(),
+    name: Joi.string().trim().options({
+        language: {
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    }),
     email: Joi.string().email().options({
         language: {
             string:{
                 email: 'Email invalido'
+            },
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
             }
         }
       }),
@@ -75,8 +94,54 @@ export const payloadSchema = Joi.object({
     password2: Joi.string().valid(Joi.ref('password')).options({ language: { any: { allowOnly: 'contraseñas debe coincidir' } } })
 });
 
-export const paramsSchema = Joi.object({
-    id: Joi.number().integer().required()
+export const editUserPasswordSchema = Joi.object({
+    password: Joi.string().required().options({
+        language: {
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    }),
+    password2: Joi.string().required().options({
+        language: {
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    }),
+    password3: Joi.string().valid(Joi.ref('password2')).required().options({
+        language: {
+            any: {
+                allowOnly: 'Contraseñas deben coincidir',
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    })
+});
+
+export const editUserInfoSchema = Joi.object({
+    name: Joi.string().trim().options({
+        language: {
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    }),
+    email: Joi.string().email().options({
+        language: {
+            string:{
+                email: 'Email invalido'
+            },
+            any: {
+                required: 'Este campo es requerido',
+                empty: 'Este campo no puede ser vacío'
+            }
+        }
+    }),
 });
 
 // };

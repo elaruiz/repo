@@ -47,25 +47,27 @@ export const findMostWanted = async (req, res) => {
         .catch((error) => res(Boom.badRequest(error)));
 };
 
-export const createSearch = async (property, id) => {
+export const createSearch = async (property, req) => {
     try {
         let [instance, wasCreated] = await Search.findCreateFind({
             where: {
                 address: property.address,
                 reference: property.reference,
-                user_id: id
+                url: `${req.params.provincia}/${req.params.municipio}/${req.params.referencia}`,
+                user_id: req.auth.credentials.id
             }
         });
         if (wasCreated === false) {
-           let search = await Search.findOne({
+            let search = await Search.findOne({
                 where: {
                     address: property.address,
                     reference: property.reference,
-                    user_id: id
+                    url: `${req.params.provincia}/${req.params.municipio}/${req.params.referencia}`,
+                    user_id: req.auth.credentials.id
                 }
             });
-           search.changed('updated_at', true);
-           return await search.save()
+            search.changed('updated_at', true);
+            return await search.save()
         }
         return instance;
 
@@ -93,19 +95,18 @@ export const searchProperty = (req, res) => {
     })
     .then(response => {
         if (req.auth.credentials) {
-            createSearch(response.data, req.auth.credentials.id)
-            .then(success => success)
-            .catch(e => {throw new Error(e)});
-            }
+            createSearch(response.data, req)
+                .then(success => success)
+                .catch(e => {throw new Error(e)});
+        }
         res(response).code(200);
-        })
+    })
         .catch(e => res(Boom.badRequest(e)))
 };
 
 export const searchByAddress = (req, res) => {
     const { query } = req;
     const { province, municipality, street, type, number } = query;
-    console.log(municipality);
     const url = `${API_CATASTRO}/property/address?province=${province}&municipality=${municipality}&type=${type}&street=${street}&number=${number}`;
     request({
         uri: url,

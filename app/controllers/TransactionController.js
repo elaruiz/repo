@@ -5,6 +5,7 @@ import {createMembership, updateMembershipEndDate} from "./MembershipController"
 import Models from '../models';
 import moment from 'moment';
 import { stripeCharge, stripePaymentDetails } from "../util/stripeFunctions";
+import { sendMailInvoice } from "../util/mailFunctions"
 import { paypalCharge, paypalExecutePayment, paypalPaymentDetails } from "../util/paypalFunctions";
 import _ from "lodash";
 
@@ -73,6 +74,7 @@ export const paymentPaypal = async (req, res) => {
 
 export const paymentExecutePaypal = async (req, res) => {
     try {
+        let data = Object.assign({}, req.pre.plan.data.dataValues);
         let payment = null;
         if(!req.payload.payment) {
             payment = await paypalExecutePayment(req);
@@ -82,6 +84,8 @@ export const paymentExecutePaypal = async (req, res) => {
         if (payment.transactions[0].related_resources[0].sale.state === "completed") {
             let membership = await createMembership(req);
             let transaction = await createTransactionPaypal(payment, membership);
+            let user = await User.findById(req.auth.credentials.id);
+            await sendMailInvoice(user, transaction, data);
             res({data: membership}).code(201);
         }
     } catch (error) {
@@ -233,12 +237,12 @@ export const getPaymentDetails = (req, res) => {
             }
         })
         .then(data => res(data).code(200))
-        .catch(err => Boom.badRequest(err));
+        .catch(err => res(Boom.badRequest(err)));
 };
 
 export const verifyPaypalPayment = (req,res) => {
     const paymentId = req.params.id;
     paypalPaymentDetails(paymentId)
         .then(data => res(data).code(200))
-        .catch(err => Boom.badRequest(err))
+        .catch(err => res(Boom.badRequest(err)))
 };

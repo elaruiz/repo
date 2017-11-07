@@ -39,7 +39,7 @@ export const createPlanSchema = Joi.object({
             }
         }
       }),
-    currency: Joi.string().min(1).max(3).required().options({
+    currency: Joi.string().uppercase().min(1).max(3).required().options({
         language: {
           any: {
             required: 'Este campo es requerido',
@@ -85,7 +85,7 @@ export const updatePlanSchema = Joi.object({
             }
         }
       }),
-    currency: Joi.string().min(1).max(3),
+    currency: Joi.string().uppercase().min(1).max(3),
     interval_time: Joi.string().valid('month', 'year', 'week', 'day'),
     interval_count: Joi.number().integer().min(1).options({
         language: {

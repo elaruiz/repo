@@ -1,12 +1,11 @@
-
 import {
-    findUser, deleteUser, forgot_password, verifyCredentials, setLastLogin,
+    findUser, retrieveUser, deleteUser, forgot_password, verifyCredentials,
     resetPassword, verifyUniqueUser, createUser, updateUser, findUsersSubAboutToExpire,
-    findAllUsers, findUserById
+    findAllUsers, findUserById, updateUserInfo, updateUserPassword
 } from "../controllers/UserController";
 import {createToken, decodeToken} from "../util/token"
 import {ErrorMsg} from "../util/responses";
-import {authenticateUserSchema, createUserSchema, payloadSchema} from "../schemas/UserSchema";
+import {authenticateUserSchema, createUserSchema, payloadSchema, editUserInfoSchema, editUserPasswordSchema} from "../schemas/UserSchema";
 import _ from 'lodash';
 
 
@@ -15,7 +14,7 @@ const userRoute = {
     path: '/api/users/me',
     config: {
         auth: 'jwt',
-        handler: findUser
+        handler: retrieveUser
     }
 };
 
@@ -38,7 +37,7 @@ const loginUserRoute = {
             let user = _.omit(req.pre.user.dataValues, ['password']);
             res({user: { token: createToken(req.pre.user), data: user } }).code(200);
         },
-      validate: {
+        validate: {
             payload: authenticateUserSchema,
             failAction: (req,res,source, error) => res(ErrorMsg(error))
         }
@@ -47,7 +46,7 @@ const loginUserRoute = {
 
 const resetPasswordRoute = {
     method: 'POST',
-    path: '/api/users/reset_password',
+    path: '/api/users/reset-password',
     config: {
         pre: [{ method: decodeToken, assign: 'token' }],
         auth: false,
@@ -72,13 +71,29 @@ const signupUserRoute = {
 };
 
 const updateUserRoute ={
-    method: ['PATCH', 'PUT'],
-    path: '/api/users',
+    method: ['PUT'],
+    path: '/api/users/edit',
     config: {
         pre: [{ method: findUser,  assign: 'user' }],
-        handler: updateUser,
+        handler: updateUserInfo,
         validate: {
-            payload: payloadSchema,
+            payload: editUserInfoSchema,
+            failAction: (req,res,source, error) => res(ErrorMsg(error))
+        },
+        auth: {
+            strategy: 'jwt'
+        }
+    }
+};
+
+const updateUserPasswordRoute ={
+    method: ['PUT'],
+    path: '/api/users/change-password',
+    config: {
+        pre: [{ method: findUser,  assign: 'user' }],
+        handler: updateUserPassword,
+        validate: {
+            payload: editUserPasswordSchema,
             failAction: (req,res,source, error) => res(ErrorMsg(error))
         },
         auth: {
@@ -121,7 +136,7 @@ const deleteUserRoute = {
             scope: ['admin']
         },
         handler: deleteUser,
-        
+
     }
 };
 
@@ -139,7 +154,7 @@ const updateUserIdRoute ={
             payload: payloadSchema,
             failAction: (req,res,source, error) => res(ErrorMsg(error))
         },
-        
+
     }
 };
 
@@ -153,6 +168,6 @@ export default [
     userRoute,
     usersRoute,
     userByIdRoute,
-    updateUserIdRoute
-
+    updateUserIdRoute,
+    updateUserPasswordRoute
 ];

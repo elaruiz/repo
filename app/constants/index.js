@@ -25,11 +25,15 @@ export const STRIPE_SK = process.env.STRIPE_SK;
 
 // MAIL SERVICE
 
-export const EMAIL_SERVICE = process.env.EMAIL_SERVICE;
+export const EMAIL_HOST = process.env.EMAIL_HOST;
+
+export const EMAIL_PORT = process.env.EMAIL_PORT;
 
 export const EMAIL_USER = process.env.EMAIL_USER;
 
 export const EMAIL_PASSWORD =  process.env.EMAIL_PASSWORD;
+
+export const EMAIL_ACCOUNT =  process.env.EMAIL_ACCOUNT;
 
 // PAYPAL API KEYS
 
@@ -48,3 +52,7 @@ export const API_PROCESSOR = process.env.API_PROCESSOR;
 export const API_CATASTRO = process.env.API_CATASTRO;
 
 export const API_SCRAPPER = process.env.API_SCRAPPER;
+
+// CLIENTE
+
+export const CLIENTE_WEB = process.env.CLIENTE_WEB;

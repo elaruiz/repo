@@ -5,10 +5,11 @@ import hapiCors from 'hapi-cors';
 import { TOKEN_SECRET } from "./constants/index";
 import routes from './routes';
 import inert from 'inert';
-
-
+import models from './models';
+import moment from 'moment';
 
 const server = new Hapi.Server();
+const User = models.user;
 
 // The connection object takes some
 // configuration, including the port
@@ -40,11 +41,30 @@ server.register(inert, (err) => {
         }
     });
 
-server.register(require('hapi-auth-jwt'), err => {
+server.register(require('hapi-auth-jwt2'), err => {
+    let validate = async ( decodedToken, request, callback) => {
+        try{
+            let user = await User.findById(decodedToken.id);
+            let changePassword = moment(user.dataValues.updated_at).valueOf();
+
+            if (decodedToken.iat < changePassword) {
+                return callback(null, false);
+            }
+            else if (decodedToken.iat > changePassword) {
+                return callback(null, true)
+            }
+        }
+        catch (error) {
+            throw new Error(error)
+        }
+
+    };
+
     // We are giving the strategy a name of 'jwt'
     server.auth.strategy('jwt', 'jwt', 'required', {
         key: TOKEN_SECRET,
-        verifyOptions: {algorithms: ['HS256']}
+        validateFunc: validate,
+        verifyOptions: {algorithms: ['HS512']}
     });
     
     server.route(routes);

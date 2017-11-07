@@ -2,8 +2,10 @@
 
 const jwt = require('jsonwebtoken');
 const secret = require('../constants').TOKEN_SECRET;
+const moment = require('moment');
 
 export const createToken = (user) => {
+    let now = moment().valueOf();
   let scopes;
   // Check if the user object passed in
   // has admin set to true, and if so, set
@@ -13,9 +15,9 @@ export const createToken = (user) => {
   }
   // Sign the JWT
   return jwt.sign(
-    { id: user.id, name: user.name, scope: scopes },
+    { id: user.id, scope: scopes, iat: now},
     secret,
-    { algorithm: 'HS256', expiresIn: '4h' }
+    { algorithm: 'HS512'}
   );
 };
 

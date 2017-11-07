@@ -20,7 +20,7 @@ const userModel = (sequelize, DataTypes) =>{
         User.hasMany(models.search);
         User.hasMany(models.report);
     };
-       
+
     return User;
 };
 

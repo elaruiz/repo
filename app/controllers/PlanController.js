@@ -23,7 +23,11 @@ export const findAllPlans = (req, res) => {
     page= parseInt(req.query.page) || 1,
     offset = size * (page - 1);
     return Plan
-        .findAndCountAll({offset: offset, limit: size})
+        .findAndCountAll({
+            offset: offset,
+            limit: size,
+            order: [['price', 'ASC']],
+        })
         .then(plans => { 
             let pages = Math.ceil(plans.count / size);
             res({
