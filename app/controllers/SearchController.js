@@ -35,6 +35,31 @@ export const findUserSearches = (req, res) => {
         .catch((error) => res(Boom.badRequest(error)));
 };
 
+export const findUsersSearches = (req, res) => {
+    let size = parseInt(req.query.size) || 5,
+        page= parseInt(req.query.page) || 1,
+        offset = size * (page - 1);
+    return Search
+        .findAndCountAll({
+            offset: offset,
+            limit: size,
+            order: [['updated_at', 'DESC']] })
+        .then(searches => {
+            let pages = Math.ceil(searches.count / size);
+            res({
+                data: searches.rows,
+                meta: {
+                    total: searches.count,
+                    pages: pages,
+                    items: size,
+                    page: page
+                }
+            })
+                .code(200)
+        })
+        .catch((error) => res(Boom.badRequest(error)));
+};
+
 export const findMostWanted = async (req, res) => {
     return Search
         .findAll({

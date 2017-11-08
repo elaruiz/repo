@@ -1,7 +1,7 @@
 import {
     deleteSearches,
     findMostWanted, findUserSearches, 
-    searchByAddress,
+    searchByAddress, findUsersSearches,
     searchMunicipalities, searchProperty,
     searchProvinces, searchVias
 } from "../controllers/SearchController";
@@ -38,6 +38,15 @@ const readSearchesRoute = {
             strategy: 'jwt',
         },
         handler: findUserSearches,
+    }
+};
+
+const readLastSearchesRoute = {
+    method: 'GET',
+    path: '/api/last-searches',
+    config: {
+        auth: false,
+        handler: findUsersSearches,
     }
 };
 
@@ -122,5 +131,6 @@ export default [
     searchByAddresRoute,
     searchMunicipalitiesRoute,
     searchProvincesRoute,
-    searchViasRoute
+    searchViasRoute,
+    readLastSearchesRoute
 ];
