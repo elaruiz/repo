@@ -114,8 +114,10 @@ export const deleteSearches = (req, res) => {
 
 export const searchProperty = (req, res) => {
     const { params } = req;
+    const { provincia, municipio, referencia } = params;
+
     request({
-        uri: `${API_PROCESSOR}/property/process/${params.provincia}/${params.municipio}/${params.referencia}`,
+        uri: `${API_PROCESSOR}/property/process/${provincia}/${municipio}/${referencia}`,
         json: true
     })
     .then(response => {
@@ -132,7 +134,12 @@ export const searchProperty = (req, res) => {
 export const searchByAddress = (req, res) => {
     const { query } = req;
     const { province, municipality, street, type, number } = query;
-    const url = `${API_CATASTRO}/property/address?province=${province}&municipality=${municipality}&type=${type}&street=${street}&number=${number}`;
+
+    const cleanProv = province.replace(/Ñ/g,'~');
+    const cleanMun = municipality.replace(/Ñ/g,'~');
+    const cleanStreet = street.replace(/Ñ/g,'~');
+
+    const url = `${API_CATASTRO}/property/address?province=${cleanProv}&municipality=${cleanMun}&type=${type}&street=${cleanStreet}&number=${number}`;
     request({
         uri: url,
         json: true
@@ -144,7 +151,8 @@ export const searchByAddress = (req, res) => {
 };
 
 export const searchMunicipalities = (req, res) => {
-    let url = `${API_CATASTRO}/municipalities/${req.params.name}`
+    const cleanName = req.params.name.replace(/Ñ/g,'~');
+    let url = `${API_CATASTRO}/municipalities/${cleanName}`;
     request({
         uri: url,
         json: true
@@ -168,7 +176,9 @@ export const searchProvinces = (req, res) => {
 };
 
 export const searchVias = (req, res) => {
-    let url = `${API_CATASTRO}/vias/${req.params.province}/${req.params.municipality}`;
+    const cleanMun = req.params.municipality.replace(/Ñ/g,'~');
+    const cleanProv = req.params.province.replace(/Ñ/g,'~');
+    let url = `${API_CATASTRO}/vias/${cleanProv}/${cleanMun}`;
     request({
         uri: url,
         json: true
