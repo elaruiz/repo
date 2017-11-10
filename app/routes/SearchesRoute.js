@@ -1,9 +1,9 @@
 import {
     deleteSearches,
-    findMostWanted, findUserSearches, 
+    findMostWanted, findUserSearches,
     searchByAddress, findUsersSearches,
     searchMunicipalities, searchProperty,
-    searchProvinces, searchVias
+    searchProvinces, searchVias, searchFullAddresses
 } from "../controllers/SearchController";
 
 const deleteSearchesRoute = {
@@ -122,6 +122,15 @@ const searchViasRoute = {
     }
 };
 
+const searchFullAddressesRoute = {
+    method: 'GET',
+    path: '/api/search/addresses/list',
+    config: {
+        auth: false,
+        handler: searchFullAddresses
+    }
+};
+
 export default [
     readUserSearchesRoute,
     deleteSearchesRoute,
@@ -132,5 +141,6 @@ export default [
     searchMunicipalitiesRoute,
     searchProvincesRoute,
     searchViasRoute,
-    readLastSearchesRoute
+    readLastSearchesRoute,
+    searchFullAddressesRoute
 ];
