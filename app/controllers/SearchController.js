@@ -133,7 +133,8 @@ export const searchProperty = (req, res) => {
 
 export const searchByAddress = (req, res) => {
     const { query } = req;
-    const { province, municipality, street, type, number, page = 1 } = query;
+    const { province, municipality, street, type, number } = query;
+    const page = query.page || 1;
 
     const cleanProv = province.replace(/Ñ/g,'~');
     const cleanMun = municipality.replace(/Ñ/g,'~');
