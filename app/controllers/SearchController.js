@@ -133,13 +133,13 @@ export const searchProperty = (req, res) => {
 
 export const searchByAddress = (req, res) => {
     const { query } = req;
-    const { province, municipality, street, type, number } = query;
+    const { province, municipality, street, type, number, page = 1 } = query;
 
     const cleanProv = province.replace(/Ñ/g,'~');
     const cleanMun = municipality.replace(/Ñ/g,'~');
     const cleanStreet = street.replace(/Ñ/g,'~');
 
-    const url = `${API_CATASTRO}/property/address?province=${cleanProv}&municipality=${cleanMun}&type=${type}&street=${cleanStreet}&number=${number}`;
+    const url = `${API_CATASTRO}/property/address?province=${cleanProv}&municipality=${cleanMun}&type=${type}&street=${cleanStreet}&number=${number}&page=${page}`;
     request({
         uri: url,
         json: true
